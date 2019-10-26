@@ -14,17 +14,13 @@ class App extends Component {
     showPersons: false
   };
 
-  switchNameHandler = (newName) => {
-    // console.log('Was clicked!');
-    // DON'T DO THIS: this.state.persons[0].name = 'Maximilian';
-    this.setState({
-      persons: [
-        { name: newName, age: 28 },
-        { name: 'Manu', age: 29 },
-        { name: 'Stephanie', age: 27 }
-      ]
-    });
-  };
+  deletePersonHandler = (personIndex) => {
+    // we'll fetch all the 'persons'
+    const newPersons = this.state.persons;
+    // at this index, personIndex, we'll replace 1
+    newPersons.splice(personIndex, 1);
+    this.setState({persons: newPersons});
+  }
 
   nameChangedHandler = (event) => {
     this.setState( {
@@ -50,6 +46,23 @@ class App extends Component {
       padding: '8px',
       cursor: 'pointer'
     };
+
+    let persons = null;
+
+    if (this.state.showPersons) {
+      persons = (
+        <div >
+          {this.state.persons.map((person, index) => {
+            return <Person
+            click={() => this.deletePersonHandler(index)}
+            name={person.name}
+            age={person.age}
+          />
+          })}
+        </div>
+      );
+    };
+
     return (
       <div className="App">
         <h1>Hi, I'm a React App</h1>
@@ -57,30 +70,9 @@ class App extends Component {
         <button 
           style={style}
           onClick={this.togglePersonsHandler}>Toggle Person</button>
-        { 
-          this.state.showPersons ?
-            <div >
-              <Person
-                name={this.state.persons[0].name}
-                age={this.state.persons[0].age}
-              /> 
-              <Person
-                name={this.state.persons[1].name}
-                age={this.state.persons[1].age}
-                passClick={this.switchNameHandler.bind(this, 'max-other-this')}
-                changed={this.nameChangedHandler}
-              >
-                My Hobbies: Racing
-              </Person>
-              <Person
-                name={this.state.persons[2].name}
-                age={this.state.persons[2].age}
-              />
-            </div> : null
-        }
+          {persons}
       </div>
     );
-    // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
   }
 }
 
